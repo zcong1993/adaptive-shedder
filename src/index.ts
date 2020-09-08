@@ -10,6 +10,8 @@ export interface AdaptiveShedderOptions {
   coolOffDuration?: number
 }
 
+export class ErrServiceOverloaded extends Error {}
+
 const defaultOptions: AdaptiveShedderOptions = {
   window: 5000,
   buckets: 50,
@@ -19,34 +21,65 @@ const defaultOptions: AdaptiveShedderOptions = {
   coolOffDuration: 1000,
 }
 
+const hr2ms = (hr: [number, number]) => hr[0] * 1e3 + hr[1] / 1e6
+
+export interface Cb {
+  fail(): void
+  pass(): void
+}
+
 export class AdaptiveShedder {
   private windows: number
-  private dropTime: number = 0
+  private dropTime: [number, number]
   private dropRecently: boolean = false
   private flying: number = 0
   private avgFlying: number = 0
   private passCounter: RollingWindow
   private rtCounter: RollingWindow
 
-  constructor(private readonly options: AdaptiveShedderOptions) {
+  constructor(private readonly options?: AdaptiveShedderOptions) {
     this.options = {
       ...defaultOptions,
       ...options,
     }
 
-    const bucketDuration = options.window / options.buckets
+    const bucketDuration = this.options.window / this.options.buckets
     this.windows = 1000 / bucketDuration
     this.passCounter = new RollingWindow({
       interval: bucketDuration,
-      size: options.buckets,
+      size: this.options.buckets,
       ignoreCurrent: true,
     })
 
     this.rtCounter = new RollingWindow({
       interval: bucketDuration,
-      size: options.buckets,
+      size: this.options.buckets,
       ignoreCurrent: true,
     })
+  }
+
+  allow(): Cb {
+    if (this.shouldDrop()) {
+      this.dropTime = process.hrtime()
+      this.dropRecently = true
+      throw new ErrServiceOverloaded()
+    }
+
+    this.addFlying(1)
+
+    const start = process.hrtime()
+
+    return {
+      fail: () => {
+        this.addFlying(-1)
+      },
+      pass: () => {
+        const rt = hr2ms(process.hrtime(start))
+        this.addFlying(1)
+        this.rtCounter.add(rt)
+        this.passCounter.add(1)
+      },
+    }
   }
 
   private addFlying(delta: number) {
@@ -85,7 +118,7 @@ export class AdaptiveShedder {
 
   private minRt() {
     let result = this.options.minRt
-    this.passCounter.reduce((b) => {
+    this.rtCounter.reduce((b) => {
       if (b.count <= 0) {
         return
       }
@@ -99,14 +132,34 @@ export class AdaptiveShedder {
   }
 
   private shouldDrop() {
-    // if (this.systemOverloaded() || ) {
-    // }
+    if (this.systemOverloaded() || this.stillHot()) {
+      if (this.highThru()) {
+        console.log(
+          `dropreq, cpu: ${getCpuUsage()}, maxPass: ${this.maxPass()}, minRt: ${this.minRt()}, hot: ${this.stillHot()}, flying: ${
+            this.flying
+          }, avgFlying: ${this.avgFlying}`
+        )
+        return true
+      }
+    }
+    return false
   }
 
   private stillHot() {
     if (!this.dropRecently) {
       return false
     }
+
+    if (!this.dropTime) {
+      return false
+    }
+
+    const dur = hr2ms(process.hrtime(this.dropTime))
+    const hot = dur < this.options.coolOffDuration
+    if (!hot) {
+      this.dropRecently = false
+    }
+    return hot
   }
 
   private systemOverloaded() {
