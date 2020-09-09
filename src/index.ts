@@ -1,5 +1,8 @@
 import { getCpuUsage } from '@zcong/cpu-usage/dist/default'
 import { RollingWindow } from '@zcong/rolling-window'
+import * as debugF from 'debug'
+
+const debug = debugF('adaptive-shedder')
 
 export interface AdaptiveShedderOptions {
   window?: number
@@ -75,7 +78,7 @@ export class AdaptiveShedder {
       },
       pass: () => {
         const rt = hr2ms(process.hrtime(start))
-        this.addFlying(1)
+        this.addFlying(-1)
         this.rtCounter.add(rt)
         this.passCounter.add(1)
       },
@@ -134,7 +137,7 @@ export class AdaptiveShedder {
   private shouldDrop() {
     if (this.systemOverloaded() || this.stillHot()) {
       if (this.highThru()) {
-        console.log(
+        debug(
           `dropreq, cpu: ${getCpuUsage()}, maxPass: ${this.maxPass()}, minRt: ${this.minRt()}, hot: ${this.stillHot()}, flying: ${
             this.flying
           }, avgFlying: ${this.avgFlying}`
