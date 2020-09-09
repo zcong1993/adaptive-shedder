@@ -11,6 +11,16 @@ export interface AdaptiveShedderOptions {
   minRt?: number
   flyingBeta?: number
   coolOffDuration?: number
+  onDrop?: (ds: DropStat) => void
+}
+
+export interface DropStat {
+  cpu: number
+  maxPass: number
+  minRt: number
+  hot: boolean
+  flying: number
+  avgFlying: number
 }
 
 export class ErrServiceOverloaded extends Error {}
@@ -137,11 +147,21 @@ export class AdaptiveShedder {
   private shouldDrop() {
     if (this.systemOverloaded() || this.stillHot()) {
       if (this.highThru()) {
-        debug(
-          `dropreq, cpu: ${getCpuUsage()}, maxPass: ${this.maxPass()}, minRt: ${this.minRt()}, hot: ${this.stillHot()}, flying: ${
-            this.flying
-          }, avgFlying: ${this.avgFlying}`
-        )
+        const ds: DropStat = {
+          cpu: getCpuUsage(),
+          maxPass: this.maxPass(),
+          minRt: this.minRt(),
+          hot: this.stillHot(),
+          flying: this.flying,
+          avgFlying: this.avgFlying,
+        }
+
+        debug('dropreq', ds)
+
+        if (this.options.onDrop) {
+          this.options.onDrop(ds)
+        }
+
         return true
       }
     }
