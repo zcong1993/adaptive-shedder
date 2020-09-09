@@ -716,10 +716,10 @@
     "@typescript-eslint/types" "4.1.0"
     eslint-visitor-keys "^2.0.0"
 
-"@zcong/cpu-usage@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@zcong/cpu-usage/-/cpu-usage-0.1.0.tgz#d71c5382b1ceb538115a5e644dd2ec86e3bf0224"
-  integrity sha512-Ni2rY3lDa5C0J7uYGW1pmboMzcCy8g7tm6zpeD1xTS9T1obBWjmwGY3y/WijyuGyFYL6UVWfdmegTNJs5g1VAg==
+"@zcong/cpu-usage@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@zcong/cpu-usage/-/cpu-usage-0.1.1.tgz#c0916d876e5e3d67dd8b9e91a2a462aa1f1c5336"
+  integrity sha512-EkiLxL5inovcAx8QJUdWdrzn3DpLfIKcvSKxDpd3JPJjzqLyNQc406xwSXssUG15fOW1Xno8rzLBTNRdUiVcXA==
 
 "@zcong/rolling-window@^0.1.0":
   version "0.1.0"
