@@ -1,6 +1,6 @@
 {
   "name": "@zcong/adaptive-shedder",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "node adaptive shedder",
   "main": "./dist/index.js",
   "files": [
