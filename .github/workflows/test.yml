@@ -27,4 +27,4 @@ jobs:
         run: yarn
       - name: run test
         run: yarn test:cov
-      - uses: codecov/codecov-action@latest
+      - uses: codecov/codecov-action@v1
