@@ -1,6 +1,6 @@
 import { getCpuUsage } from '@zcong/cpu-usage/dist/default'
 import { RollingWindow } from '@zcong/rolling-window'
-import * as debugF from 'debug'
+import debugF from 'debug'
 
 const debug = debugF('adaptive-shedder')
 

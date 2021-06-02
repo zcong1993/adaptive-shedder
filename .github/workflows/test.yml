@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v2
         with:
           registry-url: "https://registry.npmjs.org"
           node-version: 14
@@ -27,4 +27,4 @@ jobs:
         run: yarn
       - name: run test
         run: yarn test:cov
-      # - uses: codecov/codecov-action@v1
+      - uses: codecov/codecov-action@latest
