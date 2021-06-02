@@ -15,26 +15,27 @@
     "format": "prettier --write '**/*.{ts,json,md}'",
     "jest": "jest --detectOpenHandles --forceExit",
     "jest:cov": "jest --coverage --detectOpenHandles --forceExit",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "lint-staged": "lint-staged"
   },
   "types": "./dist/index.d.ts",
   "author": "zcong1993",
   "license": "MIT",
   "devDependencies": {
     "@types/debug": "^4.1.5",
-    "@types/jest": "^26.0.13",
-    "@types/node": "^14.6.4",
-    "@typescript-eslint/eslint-plugin": "^4.1.0",
-    "@typescript-eslint/parser": "^4.1.0",
-    "eslint": "^7.8.1",
-    "eslint-config-prettier": "^6.11.0",
-    "eslint-plugin-import": "^2.22.0",
-    "husky": "^4.3.0",
-    "jest": "^26.4.2",
+    "@types/jest": "^26.0.23",
+    "@types/node": "^15.6.2",
+    "@typescript-eslint/eslint-plugin": "^4.26.0",
+    "@typescript-eslint/parser": "^4.26.0",
+    "eslint": "^7.27.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.23.4",
+    "husky": "^6.0.0",
+    "jest": "^27.0.3",
     "lint-staged": "^11.0.0",
-    "prettier": "^2.1.1",
-    "ts-jest": "^26.3.0",
-    "typescript": "^4.0.2"
+    "prettier": "^2.3.0",
+    "ts-jest": "^27.0.2",
+    "typescript": "^4.3.2"
   },
   "jest": {
     "testEnvironment": "node",
@@ -64,7 +65,7 @@
   },
   "dependencies": {
     "@zcong/cpu-usage": "^0.1.1",
-    "@zcong/rolling-window": "^0.1.0",
-    "debug": "^4.1.1"
+    "@zcong/rolling-window": "^0.1.2",
+    "debug": "^4.3.1"
   }
 }

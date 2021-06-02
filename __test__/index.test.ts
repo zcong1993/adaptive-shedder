@@ -1,22 +1,24 @@
-import { RollingWindow } from '@zcong/rolling-window'
+import { RollingWindow, MockTimer } from '@zcong/rolling-window'
 import { AdaptiveShedder } from '../src'
-
-const sleep = (n: number) => new Promise((r) => setTimeout(r, n))
 
 const bucket = 10
 const interval = 50
 
 it('test max pass', async () => {
-  const passCounter = new RollingWindow({
-    size: bucket,
-    interval,
-    ignoreCurrent: true,
-  })
+  const mt = new MockTimer()
+  const passCounter = new RollingWindow(
+    {
+      size: bucket,
+      interval,
+      ignoreCurrent: true,
+    },
+    mt
+  )
   const a = new AdaptiveShedder()
   ;(a as any).passCounter = passCounter
   for (let i = 0; i <= 10; i++) {
     passCounter.add(i * 100)
-    await sleep(interval)
+    mt.add(interval * 1e6)
   }
   expect((a as any).maxPass()).toBe(1000)
 
@@ -25,16 +27,20 @@ it('test max pass', async () => {
 })
 
 it('test min rt', async () => {
-  const rtCounter = new RollingWindow({
-    size: bucket,
-    interval,
-    ignoreCurrent: true,
-  })
+  const mt = new MockTimer()
+  const rtCounter = new RollingWindow(
+    {
+      size: bucket,
+      interval,
+      ignoreCurrent: true,
+    },
+    mt
+  )
   const a = new AdaptiveShedder()
   ;(a as any).rtCounter = rtCounter
   for (let i = 0; i < 10; i++) {
     if (i > 0) {
-      await sleep(interval)
+      mt.add(interval * 1e6)
     }
     for (let j = i * 10 + 1; j <= i * 10 + 10; j++) {
       rtCounter.add(j)
@@ -47,23 +53,30 @@ it('test min rt', async () => {
 })
 
 it('test max flight', async () => {
-  const passCounter = new RollingWindow({
-    size: bucket,
-    interval,
-    ignoreCurrent: true,
-  })
-  const rtCounter = new RollingWindow({
-    size: bucket,
-    interval,
-    ignoreCurrent: true,
-  })
+  const mt = new MockTimer()
+  const passCounter = new RollingWindow(
+    {
+      size: bucket,
+      interval,
+      ignoreCurrent: true,
+    },
+    mt
+  )
+  const rtCounter = new RollingWindow(
+    {
+      size: bucket,
+      interval,
+      ignoreCurrent: true,
+    },
+    mt
+  )
   const a = new AdaptiveShedder()
   ;(a as any).passCounter = passCounter
   ;(a as any).rtCounter = rtCounter
 
   for (let i = 0; i < 10; i++) {
     if (i > 0) {
-      await sleep(interval)
+      mt.add(interval * 1e6)
     }
     passCounter.add((i + 1) * 100)
     for (let j = i * 10 + 1; j <= i * 10 + 10; j++) {
@@ -75,23 +88,30 @@ it('test max flight', async () => {
 })
 
 it('test should drop', async () => {
-  const passCounter = new RollingWindow({
-    size: bucket,
-    interval,
-    ignoreCurrent: true,
-  })
-  const rtCounter = new RollingWindow({
-    size: bucket,
-    interval,
-    ignoreCurrent: true,
-  })
+  const mt = new MockTimer()
+  const passCounter = new RollingWindow(
+    {
+      size: bucket,
+      interval,
+      ignoreCurrent: true,
+    },
+    mt
+  )
+  const rtCounter = new RollingWindow(
+    {
+      size: bucket,
+      interval,
+      ignoreCurrent: true,
+    },
+    mt
+  )
   const a = new AdaptiveShedder()
   ;(a as any).passCounter = passCounter
   ;(a as any).rtCounter = rtCounter
 
   for (let i = 0; i < 10; i++) {
     if (i > 0) {
-      await sleep(interval)
+      mt.add(interval * 1e6)
     }
     passCounter.add((i + 1) * 100)
     for (let j = i * 10 + 1; j <= i * 10 + 10; j++) {

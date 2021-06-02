@@ -1,11 +1,8 @@
 # [0.2.0](https://github.com/zcong1993/adaptive-shedder/compare/v0.1.1...v0.2.0) (2020-09-09)
 
-
 ### Features
 
-* add on drop stat callback option ([e9030ea](https://github.com/zcong1993/adaptive-shedder/commit/e9030eaa8cd20dbde4d7098ba11862e8e55f462b))
-
-
+- add on drop stat callback option ([e9030ea](https://github.com/zcong1993/adaptive-shedder/commit/e9030eaa8cd20dbde4d7098ba11862e8e55f462b))
 
 ## [0.1.1](https://github.com/zcong1993/adaptive-shedder/compare/v0.1.0...v0.1.1) (2020-09-09)
 
